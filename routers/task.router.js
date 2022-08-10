@@ -8,7 +8,7 @@ router.route('/new').post(taskController.createTask);
 
 router.route('/:taskId')
 .get(taskController.getTaskById)
-.post(taskController.updateTaskById);
+.put(taskController.updateTaskById);
 
 // delete task functionality is not yet implimented
 

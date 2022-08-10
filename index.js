@@ -3,15 +3,12 @@ const express = require('express');
 const app = express();
 const cors = require('cors')
 const mongoose = require('mongoose');
-const join = require('path').join;
 require('dotenv').config();
 const config = require('./config');
-const fs = require('fs');
-const { signUp, login } = require('./controllers/user.controller');
-const models = join(__dirname, 'models');
-module.exports = app;
 
+const routes = require('./routers/index.router')
 
+app.use('/', routes);
 
 // Bootstrap models
 // fs.readdirSync(models)
@@ -52,15 +49,7 @@ app.get('/', (req, res) => {
     res.send("working")
 })
 
-app.get('/signUp', signUp);
-app.get('/login', login)
 
-/**
- * JWT based authentication logic for all the routes
- */
-const authenticate = (req, res, next) => {
-
-}
 
 /**
  * Main tasks to be done
@@ -107,40 +96,11 @@ const authenticate = (req, res, next) => {
  */
 
 
-// app.get('/login', (req, res) => {
-//     const { email, password } = req.query;
-//     // Sign in with email/name and encrypted, hashed password
-//     db.collection('users').findOne({ email or name and passowrd }, (err, user) => {
-//     if(err) {
-        
-//     } else if (!user && !err) {
-
-//     } else if (!err && user) {
-
-// token generation logic and sending the token to client
-
-//     }
-// })
-
-// })
 
 
 
 
 
-
-
-/**
- * Get particular task id
- * Create task - POST
- * Update task - PUT
- * Delete task - DELETE
- */
-app.get('/task', listTasks);
-app.get('/task:taskid', getTaskById);
-app.post('/task:taskid', createTaskById);
-app.put('/task:taskid', updateTaskById);
-// app.delete('/task:taskid', deleteTaskById);
 
 
 
