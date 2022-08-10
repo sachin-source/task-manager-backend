@@ -55,10 +55,11 @@ app.get('/', (req, res) => {
 app.get('/signUp', signUp);
 app.get('/login', login)
 
+/**
+ * JWT based authentication logic for all the routes
+ */
 const authenticate = (req, res, next) => {
-    /**
-     * JWT based authentication logic for all the routes
-     */
+
 }
 
 /**
@@ -125,34 +126,7 @@ const authenticate = (req, res, next) => {
 
 
 
-const listTasks = (req, res) => {
-    db.collection('task-management').find({}, (err, tasks) => {
-        res.send(tasks)
-    })
-};
 
-const getTaskById = (req, res) => {
-    const { taskid } = req.params.taskid;
-    db.collection('task-management').find({ _id : taskid }, (err, task) => {
-        res.send(task)
-    })
-};
-
-const updateTaskById = (req, res) => {
-    const { taskid } = req.params.taskid;
-    const { name, discription, assignee, assigner, priority, status } = req.body;
-    db.collection('task-management').upadteOne({ _id : taskid }, { name, discription, assignee, assigner, priority, status, updatedAt : Date.now() }, (err, task) => {
-        res.send(task)
-    })
-};
-
-const createTaskById = (req, res) => {
-    const { taskid } = req.params.taskid;
-    const { name, discription, assignee, assigner, priority, status } = req.body;
-    db.collection('task-management').insertOne({ name, discription, assignee, assigner, priority, status, createdAt : Date.now(), updatedAt : Date.now() }, (err, created) => {
-        res.send(created)
-    })
-};
 
 
 

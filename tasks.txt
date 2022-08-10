@@ -1,0 +1,10 @@
+Done
+1. Signup with email and password
+2. Login with email and password, token generation
+
+In progress
+
+
+To be done
+1. Login with email/username and password, token generation
+2. Auth middleware
