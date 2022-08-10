@@ -2,9 +2,48 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const app = express();
 const cors = require('cors')
+const mongoose = require('mongoose');
+const join = require('path').join;
+require('dotenv').config();
+const config = require('./config');
+const fs = require('fs');
+const models = join(__dirname, 'models');
+module.exports = app;
+
+// Bootstrap models
+fs.readdirSync(models)
+  .filter(file => ~file.search(/^[^.].*\.js$/))
+  .forEach(file => require(join(models, file)));
+
+connect();
+
+function listen() {
+  app.listen(3000);
+  console.log('Express app started on port ' + 3000);
+}
+
+function connect() {
+  mongoose.connection
+    .on('error', console.log)
+    .on('disconnected', connect)
+    .once('open', listen);
+  return mongoose.connect(config.db, {
+    keepAlive: 1,
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  });
+}
 
 app.use(bodyParser.json());
-app.use(cors());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(
+    cors({
+      origin: ['http://localhost:3000', 'https://reboil-demo.herokuapp.com'],
+      optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+      credentials: true
+    })
+  );
+
 
 app.get('/', (req, res) => {
     res.send("working")
@@ -126,8 +165,10 @@ app.get('/task', listTasks);
 app.get('/task:taskid', getTaskById);
 app.post('/task:taskid', createTaskById);
 app.put('/task:taskid', updateTaskById);
-app.delete('/task:taskid', deleteTaskById);
+// app.delete('/task:taskid', deleteTaskById);
 
-app.listen(3000, () => {
-    console.log("app is listening")
-})
+
+
+/**
+ * Good resources : https://github.com/madhums/node-express-mongoose-demo/
+ */
