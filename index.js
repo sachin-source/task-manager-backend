@@ -7,13 +7,16 @@ const join = require('path').join;
 require('dotenv').config();
 const config = require('./config');
 const fs = require('fs');
+const { signUp, login } = require('./controllers/user.controller');
 const models = join(__dirname, 'models');
 module.exports = app;
 
+
+
 // Bootstrap models
-fs.readdirSync(models)
-  .filter(file => ~file.search(/^[^.].*\.js$/))
-  .forEach(file => require(join(models, file)));
+// fs.readdirSync(models)
+//   .filter(file => ~file.search(/^[^.].*\.js$/))
+//   .forEach(file => require(join(models, file)));
 
 connect();
 
@@ -28,7 +31,7 @@ function connect() {
     .on('disconnected', connect)
     .once('open', listen);
   return mongoose.connect(config.db, {
-    keepAlive: 1,
+    keepAlive: true,
     useNewUrlParser: true,
     useUnifiedTopology: true
   });
@@ -48,6 +51,9 @@ app.use(
 app.get('/', (req, res) => {
     res.send("working")
 })
+
+app.get('/signUp', signUp);
+app.get('/login', login)
 
 const authenticate = (req, res, next) => {
     /**
@@ -78,11 +84,6 @@ const authenticate = (req, res, next) => {
  * Deadline for tasks
  * Deadline based listing of tasks
  * Reminder notifications for tasks ( Like alarm )
- */
-
-/**
- * Task schema :
- * Taskid, name, discription, assignee, assigner, priority, status, createdAt, updatedAt
  */
 
 /**
