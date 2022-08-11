@@ -17,7 +17,6 @@ app.use('/', routes);
 
 connect();
 
-listen();
 function listen() {
   app.listen(3000);
   console.log('Express app started on port ' + 3000);
