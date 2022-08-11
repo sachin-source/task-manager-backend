@@ -12,7 +12,7 @@ const taskRoutes = require("./task.router");
 router.use('/auth', authRoutes);
 router.use('/task', authenticate, taskRoutes);
 
-router.get('/*', authenticate, (req, res) =>
-    res.send('OK' + JSON.stringify(req.user))
+router.get('/*', (req, res) =>
+    res.send('OK')
 );
 module.exports = router;

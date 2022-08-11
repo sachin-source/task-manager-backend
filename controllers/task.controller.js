@@ -7,16 +7,16 @@ const listTasks = (req, res) => {
 };
 
 const getTaskById = (req, res) => {
-    const { taskid } = req.params.taskid;
-    Task.find({ _id : taskid }, (err, task) => {
+    const { taskId } = req.params;
+    Task.find({ _id : taskId }, (err, task) => {
         res.send(task);
     })
 };
 
 const updateTaskById = (req, res) => {
-    const { taskid } = req.params.taskid;
+    const { taskId } = req.params;
     const { name, discription, assignee, assigner, priority, status } = req.body;
-    Task.upadteOne({ _id : taskid }, { name, discription, assignee, assigner, priority, status }, (err, task) => {
+    Task.upadteOne({ _id : taskId }, { name, discription, assignee, assigner, priority, status }, (err, task) => {
         res.send(task);
     })
 };
