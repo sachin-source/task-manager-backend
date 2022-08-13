@@ -7,8 +7,9 @@ require('dotenv').config();
 const config = require('./config');
 
 const routes = require('./routers/index.router')
+app.use(cors())
 
-app.use('/', routes);
+
 
 // Bootstrap models
 // fs.readdirSync(models)
@@ -18,7 +19,7 @@ app.use('/', routes);
 connect();
 
 function listen() {
-  app.listen(3000);
+  app.listen(3005);
   console.log('Express app started on port ' + 3000);
 }
 
@@ -36,17 +37,12 @@ function connect() {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(
-    cors({
-      origin: ['http://localhost:3000', 'https://reboil-demo.herokuapp.com'],
-      optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-      credentials: true
-    })
-  );
+// app.use(cors());
 
 
-app.get('/', (req, res) => {
-    res.send("working")
+app.use('/', routes);
+app.get('*', (req, res) => {
+  res.send("working")
 })
 
 

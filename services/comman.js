@@ -7,8 +7,8 @@ const authenticate = (req, res, next) => {
         if (err) {
             return res.status(400).send({ auth : false, message : "permission denied!"})
         } else {
-            const { name, email, provider } = decoded;
-            req.user = { name, email, provider };
+            const { name, email, provider, role } = decoded;
+            req.user = { name, email, provider, role };
             return next()
         }
     });

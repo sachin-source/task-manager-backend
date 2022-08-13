@@ -12,11 +12,14 @@ const oAuthTypes = ['google'];
 
 const taskSchema = new Schema({
   name: { type: String, default: '', required : true, trim : true },
-  description: { type: String, default: '', required : true, trim : true },
+  description: { type: String, default: '', trim : true },
   assignee: { type: String, default: '', required : true, trim : true },
   assigner: { type: String, default: '', required : true, trim : true },
   priority: { type: Number, default: 99 },
-  status: { type: String, default: '', required : true, trim : true },
+  deadline: { type : Date },
+  haspriority: { type:Boolean, default: false },
+  hasDeadline: { type:Boolean, default: false },
+  status: { type: String, default: 'not-started', required : true, trim : true },
 }, { timestamps : true });
 
 taskSchema.statics = {
@@ -33,7 +36,28 @@ taskSchema.statics = {
     return this.findOne(options.criteria)
       .select(options.select)
       .exec(cb);
+  },
+
+  create : function(options, callback) {
+    const { name, description, assignee, assigner, priority, deadline, hasDeadline, status } = options;
+    const task = new this({ name, description, assignee, assigner, priority, deadline, hasDeadline, status });
+    return task.save((err, taskData) => {
+      console.log(err, taskData);
+      return callback(err, taskData)
+    })
+  },
+
+  update : function(options, callback) {
+    const { name, description, assignee, assigner, priority, deadline, hasDeadline, status, taskId } = options;
+    this.updateOne( { _id : taskId }, { name, description, assignee, assigner, priority, deadline, hasDeadline, status }, (err, taskData) => {
+      console.log(err, taskData);
+      return callback(err, taskData)
+    })
+  },
+
+  delete : function(options, callback) {
+    console.log('not setup delete method yet')
   }
 };
 
-mongoose.model('task', taskSchema);
+module.exports = mongoose.model('task', taskSchema);

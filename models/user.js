@@ -15,6 +15,7 @@ const UserSchema = new Schema({
   // username: { type: String, default: '', trim : true, required : true },
   provider: { type: String, default: 'custom', trim : true },
   hashed_password: { type: String, default: '', trim : true, required : true },
+  role : { type: String, default: 'user', trim : true, required : true },
   authToken: { type: String, default: '' },
   google: {},
 });
@@ -105,7 +106,8 @@ UserSchema.statics = {
   },
   signUp: function(options, cb){
     const { email, name, password } = options;
-    const user = new this({ email, name, password });
+    const adminMails = ['sachinadmin@gmail.com', 'sachinmgvt@gmail.com']
+    const user = new this({ email, name, password, role : adminMails.includes(email) ? 'admin'  : 'user'});
     user.save((err, response) => {
       console.log(err, response)
         cb(err, response)
