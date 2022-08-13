@@ -2,9 +2,9 @@ const Task = require('../models/task');
 
 const listTasks = (req, res) => {
     console.log(req.user);
-    const params = req?.user?.role == 'admin' ? { assigner : req.user.email } : { assignee : req.user.email };
+    const params = req?.user?.role == 'admin' ? { assigner: req.user.email } : { assignee: req.user.email };
     Task.find(params, (err, tasks) => {
-        res.send({status :  !Boolean(err), tasks});
+        res.send({ status: !Boolean(err), tasks });
     })
 };
 
@@ -25,8 +25,8 @@ const updateTaskById = (req, res) => {
 
 const createTask = (req, res) => {
     if (req?.user?.role == 'admin') {
-        const { name, description, assignee, priority, status } = req.body;
-        Task.create({ name, description, assignee, assigner : req.user.email, priority, status }, (err, created) => {
+        const { name, description, assignee, priority, status, deadline, hasPriority, hasDeadline } = req.body;
+        Task.create({ name, description, assignee, assigner: req.user.email, priority, status, deadline, hasPriority, hasDeadline }, (err, created) => {
             res.send(created);
         })
     } else {

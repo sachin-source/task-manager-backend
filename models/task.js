@@ -17,7 +17,7 @@ const taskSchema = new Schema({
   assigner: { type: String, default: '', required : true, trim : true },
   priority: { type: Number, default: 99 },
   deadline: { type : Date },
-  haspriority: { type:Boolean, default: false },
+  hasPriority: { type:Boolean, default: false },
   hasDeadline: { type:Boolean, default: false },
   status: { type: String, default: 'not-started', required : true, trim : true },
 }, { timestamps : true });
@@ -39,8 +39,8 @@ taskSchema.statics = {
   },
 
   create : function(options, callback) {
-    const { name, description, assignee, assigner, priority, deadline, hasDeadline, status } = options;
-    const task = new this({ name, description, assignee, assigner, priority, deadline, hasDeadline, status });
+    const { name, description, assignee, assigner, priority, status, deadline, hasPriority, hasDeadline } = options;
+    const task = new this({ name, description, assignee, assigner, priority, status, deadline, hasPriority, hasDeadline });
     return task.save((err, taskData) => {
       console.log(err, taskData);
       return callback(err, taskData)
