@@ -10,8 +10,8 @@ const listTasks = (req, res) => {
 
 const getTaskById = (req, res) => {
     const { taskId } = req.params;
-    Task.find({ _id: taskId }, (err, task) => {
-        res.send(task);
+    Task.findOne({ _id: taskId }, (err, task) => {
+        res.send({ status: !Boolean(err), task });
     })
 };
 

@@ -24,4 +24,23 @@ const signUp = (req, res) => {
     })
 };
 
-module.exports = { login, signUp }
+const setNotificationToken = (req, res) => {
+    const email = req.user.email;
+    const {notificationToken} = req.query
+    User.findOne({ email }, (err, userData) => {
+        console.log(userData)
+        
+        // if (!userData.notificationToken || !userData.notificationToken.includes(notificationToken)) {
+            const existingTokens = userData.notificationToken || [];
+            const newTokens = [...existingTokens, [notificationToken]];
+            return User.updateOne({ email }, { $push : {notificationToken : notificationToken} }, (err, updated) => {
+                console.log(err, updated)
+                return res.send({status : !Boolean(err)})
+            })
+        // } else {
+        //     return res.send({status : true})
+        // }
+    })
+}
+
+module.exports = { login, signUp, setNotificationToken }

@@ -17,6 +17,7 @@ const UserSchema = new Schema({
   hashed_password: { type: String, default: '', trim : true, required : true },
   role : { type: String, default: 'user', trim : true, required : true },
   authToken: { type: String, default: '' },
+  notificationToken : [{ type : String }],
   google: {},
 });
 
