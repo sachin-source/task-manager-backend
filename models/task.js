@@ -19,7 +19,7 @@ const taskSchema = new Schema({
   deadline: { type : Date },
   hasPriority: { type:Boolean, default: false },
   hasDeadline: { type:Boolean, default: false },
-  status: { type: String, default: 'not-started', required : true, trim : true },
+  progress: { type: Number, default: 0 },
 }, { timestamps : true });
 
 taskSchema.statics = {
