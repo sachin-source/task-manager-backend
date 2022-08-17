@@ -19,8 +19,8 @@ const updateTaskById = (req, res) => {
     const { taskId } = req.params;
     const { name, discription, assignee, priority, progress, deadline, hasPriority, hasDeadline } = req.body;
     const updateJson = req?.user?.role == 'admin' ? { name, discription, assignee, priority, progress, deadline, hasPriority, hasDeadline } : { progress };
-    Task.upadteOne({ _id: taskId }, updateJson, (err, task) => {
-        res.send({status : !Boolean(err), task});
+    Task.updateOne({ _id: taskId }, updateJson, (err, task) => {
+        res.send({status : !Boolean(err)});
     })
 };
 
