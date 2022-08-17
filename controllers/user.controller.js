@@ -8,7 +8,7 @@ const login = (req, res) => {
             err && console.log("error at user login,\n req.query : " + JSON.stringify(req.query) + "\n error : " + JSON.stringify(err));
             return res.send({ auth : false, message : "Login failed, Please check your credentials."});
         } else {
-            jwt.sign(userData.toJSON(), config.jwtSecretKey, { expiresIn: '16h' }, function(err, authToken) {
+            jwt.sign(userData.toJSON(), config.jwtSecretKey, function(err, authToken) {
                 return res.send({ auth : !Boolean(err), authToken, message : err ? "Error with your user data, please try again later" : "Logged in successfully."});
             });
         }
@@ -32,7 +32,6 @@ const setNotificationToken = (req, res) => {
         
         // if (!userData.notificationToken || !userData.notificationToken.includes(notificationToken)) {
             const existingTokens = userData.notificationToken || [];
-            const newTokens = [...existingTokens, [notificationToken]];
             return User.updateOne({ email }, { $push : {notificationToken : notificationToken} }, (err, updated) => {
                 console.log(err, updated)
                 return res.send({status : !Boolean(err)})
@@ -43,4 +42,15 @@ const setNotificationToken = (req, res) => {
     })
 }
 
-module.exports = { login, signUp, setNotificationToken }
+const listUsers = (req, res) => {
+    User.list({ find : {}}, (err, list) => {
+        if (err) {
+            return res.send({auth : false, message : "error listing the users"})
+        } else {
+            const users = list.filter(userdata => userdata.email != req.user.email);
+            return res.send({auth : true, users })
+        }
+    })
+}
+
+module.exports = { login, signUp, setNotificationToken, listUsers }

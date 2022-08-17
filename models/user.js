@@ -10,14 +10,14 @@ const oAuthTypes = ['github', 'twitter', 'google', 'linkedin'];
  */
 
 const UserSchema = new Schema({
-  name: { type: String, default: '', trim : true, required : true },
-  email: { type: String, default: '', trim : true, required : true, unique : true },
+  name: { type: String, default: '', trim: true, required: true },
+  email: { type: String, default: '', trim: true, required: true, unique: true },
   // username: { type: String, default: '', trim : true, required : true },
-  provider: { type: String, default: 'custom', trim : true },
-  hashed_password: { type: String, default: '', trim : true, required : true },
-  role : { type: String, default: 'user', trim : true, required : true },
+  provider: { type: String, default: 'custom', trim: true },
+  hashed_password: { type: String, default: '', trim: true, required: true },
+  role: { type: String, default: 'user', trim: true, required: true },
   authToken: { type: String, default: '' },
-  notificationToken : [{ type : String }],
+  notificationToken: [{ type: String }],
   google: {},
 });
 
@@ -28,19 +28,29 @@ const validatePresenceOf = value => value && value.length;
  */
 
 UserSchema.virtual('password')
-  .set(function(password) {
+  .set(function (password) {
     this._password = password;
     this.hashed_password = this.encryptPassword(password);
   })
-  .get(function() {
+  .get(function () {
     return this._password;
   });
 
+UserSchema.virtual('id').get(function () {
+  return this._id;
+});
+
+UserSchema.set('toJSON', {
+  virtuals: true,
+  transform: function (doc, ret) {
+    delete ret._id;
+  }
+});
 /**
  * Pre-save hook
  */
 
-UserSchema.pre('save', function(next) {
+UserSchema.pre('save', function (next) {
   if (!this.isNew) return next();
 
   if (!validatePresenceOf(this.password) && !this.skipValidation()) {
@@ -63,7 +73,7 @@ UserSchema.methods = {
    * @api public
    */
 
-  authenticate: function(password) {
+  authenticate: function (password) {
     return bcrypt.compareSync(password, this.hashed_password);
   },
 
@@ -75,7 +85,7 @@ UserSchema.methods = {
    * @api public
    */
 
-  encryptPassword: function(password) {
+  encryptPassword: function (password) {
     if (!password) return '';
     try {
       return bcrypt.hashSync(password, 10);
@@ -99,22 +109,28 @@ UserSchema.statics = {
    * @api private
    */
 
-  load: function(options, cb) {
+  load: function (options, cb) {
     options.select = options.select || 'name username';
     return this.findOne(options.criteria)
       .select(options.select)
       .exec(cb);
   },
-  signUp: function(options, cb){
+  list: function (options, cb) {
+    const { find, select = 'name email -_id' } = options;
+    return this.find(find)
+      .select(select)
+      .exec(cb);
+  },
+  signUp: function (options, cb) {
     const { email, name, password } = options;
     const adminMails = ['sachinadmin@gmail.com', 'sachinmgvt@gmail.com']
-    const user = new this({ email, name, password, role : adminMails.includes(email) ? 'admin'  : 'user'});
+    const user = new this({ email, name, password, role: adminMails.includes(email) ? 'admin' : 'user' });
     user.save((err, response) => {
       console.log(err, response)
-        cb(err, response)
+      cb(err, response)
     })
   },
-  login: function(options, cb){
+  login: function (options, cb) {
     const { email, password } = options;
     this.findOne({ email }, (err, data) => {
       const same = bcrypt.compareSync(password, data.hashed_password);
