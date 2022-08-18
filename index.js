@@ -9,7 +9,7 @@ const config = require('./config/index');
 const routes = require('./routers/index.router')
 app.use(cors())
 
-
+const port = process.env.PORT || 3000;
 
 // Bootstrap models
 // fs.readdirSync(models)
@@ -18,8 +18,8 @@ app.use(cors())
 
 
 function listen() {
-  app.listen(3005);
-  console.log('Express app started on port ' + 3000);
+  app.listen(port);
+  console.log('Express app started on port ' + port);
 }
 
 function connect() {
