@@ -32,7 +32,7 @@ const setNotificationToken = (req, res) => {
         
         // if (!userData.notificationToken || !userData.notificationToken.includes(notificationToken)) {
             const existingTokens = userData.notificationToken || [];
-            return User.updateOne({ email }, { $push : {notificationToken : notificationToken} }, (err, updated) => {
+            return User.updateOne({ email }, { $addToSet : {notificationToken : notificationToken} }, (err, updated) => {
                 console.log(err, updated)
                 return res.send({status : !Boolean(err)})
             })
