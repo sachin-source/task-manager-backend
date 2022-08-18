@@ -132,9 +132,14 @@ UserSchema.statics = {
   },
   login: function (options, cb) {
     const { email, password } = options;
-    this.findOne({ email }, (err, data) => {
+    return this.findOne({ email }, (err, data) => {
+      if (err || !data) {
+        return cb(err, false, {})
+      }else {
+        
       const same = bcrypt.compareSync(password, data.hashed_password);
-      cb(err, same, data)
+      return cb(err, same, data)
+      }
     })
   },
 };

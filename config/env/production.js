@@ -7,7 +7,7 @@
 const port = process.env.PORT || 3000;
 
 module.exports = {
-  db: process.env.MONGODB_URL || 'mongodb://localhost/app-task-manager' ,
+  db: process.env.MONGODB_URL || 'mongodb+srv://DeepakShetty:DeepakShetty@cluster0.utahtvi.mongodb.net/?retryWrites=true&w=majority',
   jwtSecretKey: process.env.MONGODB_URL || 'HiMyZilPil@$mylove$me',
   twitter: {
     clientID: process.env.TWITTER_CLIENTID,

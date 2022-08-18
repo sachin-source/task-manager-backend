@@ -16,7 +16,6 @@ app.use(cors())
 //   .filter(file => ~file.search(/^[^.].*\.js$/))
 //   .forEach(file => require(join(models, file)));
 
-connect();
 
 function listen() {
   app.listen(3005);
@@ -103,3 +102,4 @@ app.get('*', (req, res) => {
 /**
  * Good resources : https://github.com/madhums/node-express-mongoose-demo/
  */
+connect();
