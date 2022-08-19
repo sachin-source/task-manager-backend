@@ -4,7 +4,7 @@ const User = require('../models/user');
 const request = require('request');
 
 const listTasks = (req, res) => {
-    console.log(req.user);
+    // console.log(req.user);
     const params = req?.user?.role == 'admin' ? { assigner: req.user.email } : { assignee: req.user.email };
     Task.find(params, (err, tasks) => {
         res.send({ status: !Boolean(err), tasks });
@@ -32,7 +32,7 @@ const createTask = (req, res) => {
         const { name, description, assignee, priority, progress, deadline, hasPriority, hasDeadline } = req.body;
         Task.create({ name, description, assignee, assigner: req.user.email, priority, progress, deadline, hasPriority, hasDeadline }, (err, task) => {
             User.findOne({ email : assignee }, (err, userInfo) => {
-                console.log('userInfo : ', userInfo)
+                // console.log('userInfo : ', userInfo)
                 if (err) {
                     return res.send ({status : false, message : "Error finding the user"});
                 }
@@ -51,11 +51,11 @@ const createTask = (req, res) => {
                             "to": notificationToken
                         })
                     }, function(err,httpResponse,body){
-                        console.log('err : ', err, 'httpResponse : ', httpResponse, 'body : ', body)
+                        // console.log('err : ', err, 'httpResponse : ', httpResponse, 'body : ', body)
+                        res.send({status : !Boolean(err), task});
                     })
                 })
 
-                // res.send({status : !Boolean(err), task});
             } )
         })
     } else {
