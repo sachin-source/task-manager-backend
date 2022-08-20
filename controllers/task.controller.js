@@ -6,15 +6,15 @@ const request = require('request');
 const listTasks = (req, res) => {
     // console.log(req.user);
     const params = req?.user?.role == 'admin' ? { assigner: req.user.email } : { assignee: req.user.email };
-    Task.find(params, (err, tasks) => {
-        res.send({ status: !Boolean(err), tasks });
+    return Task.find(params, null, {sort: {createdAt: -1}}, (err, tasks) => {
+        return res.send({ status: !Boolean(err), tasks });
     })
 };
 
 const getTaskById = (req, res) => {
     const { taskId } = req.params;
-    Task.findOne({ _id: taskId }, (err, task) => {
-        res.send({ status: !Boolean(err), task });
+    return Task.findOne({ _id: taskId }, (err, task) => {
+        return res.send({ status: !Boolean(err), task });
     })
 };
 
