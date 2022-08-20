@@ -7,6 +7,7 @@ const listTasks = (req, res) => {
     // console.log(req.user);
     const params = req?.user?.role == 'admin' ? { assigner: req.user.email } : { assignee: req.user.email };
     return Task.find(params, null, {sort: {createdAt: -1}}, (err, tasks) => {
+        // console.log("tasks list : ", err, tasks)
         return res.send({ status: !Boolean(err), tasks });
     })
 };
@@ -30,30 +31,41 @@ const updateTaskById = (req, res) => {
 const createTask = (req, res) => {
     if (req?.user?.role == 'admin') {
         const { name, description, assignee, priority, progress, deadline, hasPriority, hasDeadline } = req.body;
-        Task.create({ name, description, assignee, assigner: req.user.email, priority, progress, deadline, hasPriority, hasDeadline }, (err, task) => {
-            User.findOne({ email : assignee }, (err, userInfo) => {
+        return Task.create({ name, description, assignee, assigner: req.user.email, priority, progress, deadline, hasPriority, hasDeadline }, (err, task) => {
+            if(err) {
+                return res.send({status : false})
+            }
+            return User.findOne({ email : assignee }, (err, userInfo) => {
                 // console.log('userInfo : ', userInfo)
                 if (err) {
                     return res.send ({status : false, message : "Error finding the user"});
                 }
 
-                userInfo.notificationToken.forEach((notificationToken) => {
-                    request.post({
-                        url:'https://fcm.googleapis.com/fcm/send',
-                        headers : { 'Content-Type' : 'application/json', 'Authorization' : 'key=AAAAeWm0fFc:APA91bF4PZtMFUQx9Hcvw6CCBtrCxjy8tL6ND6ziBHotiNwdl2-4kA6nY7XBKef8iFPA8NqgjMvKhXFR10pmMiBDexQmy7ouyU8xjciXc1KGkz5j58rbO4nM3hD19ma9oTUVbVtlirzO' },
-                        body : JSON.stringify({
-                            "notification": {
-                                "title": req.user.name + " has assigned a new task to you",
-                                "body": name ,
-                                "click_action": "https://basava-consultants.netlify.app/",
-                                "icon": "https://i.imgur.com/5zO5cce.png"
-                            },
-                            "to": notificationToken
+                const notificationPromises =  userInfo.notificationToken.map((notificationToken) => {
+                    return new Promise ((resolve, reject) => {
+                        return request.post({
+                            url:'https://fcm.googleapis.com/fcm/send',
+                            headers : { 'Content-Type' : 'application/json', 'Authorization' : 'key=AAAAeWm0fFc:APA91bF4PZtMFUQx9Hcvw6CCBtrCxjy8tL6ND6ziBHotiNwdl2-4kA6nY7XBKef8iFPA8NqgjMvKhXFR10pmMiBDexQmy7ouyU8xjciXc1KGkz5j58rbO4nM3hD19ma9oTUVbVtlirzO' },
+                            body : JSON.stringify({
+                                "notification": {
+                                    "title": req.user.name + " has assigned a new task to you",
+                                    "body": name ,
+                                    "click_action": "https://basava-consultants.netlify.app/",
+                                    "icon": "https://i.imgur.com/5zO5cce.png"
+                                },
+                                "to": notificationToken
+                            })
+                        }, function(err,httpResponse,body){
+                            // console.log('err : ', err, 'httpResponse : ', httpResponse, 'body : ', body)
+                            err ? reject(err) : resolve(body);
                         })
-                    }, function(err,httpResponse,body){
-                        // console.log('err : ', err, 'httpResponse : ', httpResponse, 'body : ', body)
-                        res.send({status : !Boolean(err), task});
                     })
+                })
+
+                Promise.allSettled(notificationPromises).then((data) => {
+                    return res.send({status : !Boolean(err), task});
+                }).catch((e) => {
+                    return res.send({status : false})
                 })
 
             } )
