@@ -67,8 +67,7 @@ const createTask = (req, res) => {
                 }).catch((e) => {
                     return res.send({status : false})
                 })
-
-            } )
+            })
         })
     } else {
         res.status(400).send({ status: false, message: "You are not authorized to perform this action" });
