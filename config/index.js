@@ -22,4 +22,4 @@ module.exports = {
   development: Object.assign({}, development, defaults),
   live: Object.assign({}, production, defaults)
 //   test: Object.assign({}, test, defaults),
-}[process.env.NODE_ENV || 'live'];
+}[process.env.NODE_ENV || 'development'];

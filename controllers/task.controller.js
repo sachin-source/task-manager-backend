@@ -12,6 +12,15 @@ const listTasks = (req, res) => {
     })
 };
 
+const listIndividualTasks = (req, res) => {
+    // console.log(req.user);
+    const {assignee } = req.query;
+    return req?.user?.role == 'admin' ? Task.find({ assigner: req.user.email , assignee }, null, {sort: {createdAt: -1}}, (err, tasks) => {
+        // console.log("tasks list : ", err, tasks)
+        return res.send({ status: !Boolean(err), tasks });
+    }) : res.send({ status : false, message : "Unprivilaged role"});
+};
+
 const getTaskById = (req, res) => {
     const { taskId } = req.params;
     return Task.findOne({ _id: taskId }, (err, task) => {
@@ -76,4 +85,4 @@ const createTask = (req, res) => {
 
 const deleteUsers = () => {}
 
-module.exports = { listTasks, getTaskById, updateTaskById, createTask }
+module.exports = { listTasks, getTaskById, updateTaskById, createTask, listIndividualTasks }
