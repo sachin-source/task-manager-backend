@@ -12,6 +12,7 @@ router.route('/:taskId')
 .get(taskController.getTaskById)
 .put(taskController.updateTaskById);
 
+router.route('/notify/:taskId').get(taskController.notify);
 // delete task functionality is not yet implimented
 
 module.exports = router;
