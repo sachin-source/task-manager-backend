@@ -7,8 +7,9 @@ const paymentSchema = new Schema({
   isApproved: { type: Boolean, default : false },
   amount: { type: Number, default : 0 },
   paidDate : { type : Date, default : Date.now() },
-  category : [{ type: String }],
-  paymentMode : { type : String },
+  paymentMode : { type : String, trim : true }, // cash, bank transfer or cheque
+  description : { type : String, trim : true }, 
+  category : [{ type: String, trim : true }],
 }, { timestamps : true })
 
 module.exports = mongoose.model('payment', paymentSchema);
