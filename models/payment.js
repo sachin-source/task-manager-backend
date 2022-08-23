@@ -7,7 +7,7 @@ const paymentSchema = new Schema({
   isApproved: { type: Boolean, default : false },
   amount: { type: Number, default : 0 },
   paidDate : { type : Date, default : Date.now() },
-  paymentMode : { type : String, trim : true }, // cash, bank transfer or cheque
+  paymentMode : [{ type : String, trim : true }], // cash, bank transfer or cheque
   description : { type : String, trim : true }, 
   category : [{ type: String, trim : true }],
 }, { timestamps : true });
@@ -17,7 +17,7 @@ paymentSchema.statics = {
     const { paymentType, senderParty, receiverParty, isApproved, amount, paidDate, paymentMode, description, category } = options;
     const payment = new this({ paymentType, senderParty, receiverParty, isApproved, amount, paidDate, paymentMode, description, category });
     return payment.save((err, paymentData) => {
-      console.log(paymentData,options, err);
+      // console.log(paymentData,options, err);
       return callback(err, paymentData)
     })
   },
