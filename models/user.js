@@ -19,7 +19,7 @@ const UserSchema = new Schema({
   authToken: { type: String, default: '' },
   notificationToken: [{ type: String }],
   google: {},
-});
+}, { timestamps : true });
 
 const validatePresenceOf = value => value && value.length;
 
