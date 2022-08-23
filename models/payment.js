@@ -1,4 +1,4 @@
-const { Schema } = require('mongoose');
+const { Schema, model } = require('mongoose');
 
 const paymentSchema = new Schema({
   paymentType: { type: String, required : true, trim : true }, // in or out
@@ -10,6 +10,17 @@ const paymentSchema = new Schema({
   paymentMode : { type : String, trim : true }, // cash, bank transfer or cheque
   description : { type : String, trim : true }, 
   category : [{ type: String, trim : true }],
-}, { timestamps : true })
+}, { timestamps : true });
 
-module.exports = mongoose.model('payment', paymentSchema);
+paymentSchema.statics = {
+  newPayment : function(options, callback) {
+    const { paymentType, senderParty, receiverParty, isApproved, amount, paidDate, paymentMode, description, category } = options;
+    const payment = new this({ paymentType, senderParty, receiverParty, isApproved, amount, paidDate, paymentMode, description, category });
+    return payment.save((err, paymentData) => {
+      console.log(paymentData,options, err);
+      return callback(err, paymentData)
+    })
+  },
+}
+
+module.exports = model('payment', paymentSchema);

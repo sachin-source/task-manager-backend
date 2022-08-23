@@ -42,7 +42,7 @@ taskSchema.statics = {
     const { name, description, assignee, assigner, priority, status, deadline, hasPriority, hasDeadline } = options;
     const task = new this({ name, description, assignee, assigner, priority, status, deadline, hasPriority, hasDeadline });
     return task.save((err, taskData) => {
-      console.log(taskData,options, err);
+      // console.log(taskData,options, err);
       return callback(err, taskData)
     })
   },
@@ -50,7 +50,7 @@ taskSchema.statics = {
   update : function(options, callback) {
     const { name, description, assignee, assigner, priority, deadline, hasDeadline, status, taskId } = options;
     this.updateOne( { _id : taskId }, { name, description, assignee, assigner, priority, deadline, hasDeadline, status }, (err, taskData) => {
-      console.log(err, taskData);
+      // console.log(err, taskData);
       return callback(err, taskData)
     })
   },
