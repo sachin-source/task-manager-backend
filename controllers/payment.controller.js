@@ -16,7 +16,10 @@ const addOut = (req, res) => {
 
 const list = (req, res) => {
     return payment.find({ $or : [ { senderParty: req.user.email }, { receiverParty: req.user.email } ] }, (err, paymentList) => {
-        return res.send({ status: (!err), paymentList });
+        !(err) ? payment.aggregate([{ $match : { $or : [ { senderParty: req.user.email }, { receiverParty: req.user.email } ]}}, { $group : { _id : "$paymentType", sum : { $sum : "$amount" } } }], (err, data) => {
+            console.log(err, data)
+            return res.send({ status: (!err), paymentList, calculations : data });
+        }) : res.send({ status: (!err), paymentList})
     })
 }
 
