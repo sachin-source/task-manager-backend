@@ -17,12 +17,25 @@ const addOut = (req, res) => {
 const list = (req, res) => {
     return payment.find({ $or : [ { senderParty: req.user.email }, { receiverParty: req.user.email } ] }, (err, paymentList) => {
         !(err) ? payment.aggregate([{ $match : { $or : [ { senderParty: req.user.email }, { receiverParty: req.user.email } ]}}, { $group : { _id : "$paymentType", sum : { $sum : "$amount" } } }], (err, data) => {
-            console.log(err, data)
             return res.send({ status: (!err), paymentList, calculations : data });
         }) : res.send({ status: (!err), paymentList})
     })
 }
 
-const updatePayment = (req, res) => { }
+const updateInPayment = (req, res) => {
+    const { senderParty, isApproved, amount, paidDate, paymentMode, description, category, _id } = req.body;
+    return payment.updateOne({ _id, receiverParty: req.user.email }, { $set : { senderParty, isApproved, amount, paidDate, paymentMode, description, category } }, { upsert : false }, (err, result) => {
+        console.log(err, result);
+        return res.send({ err, result})
+    })
+}
 
-module.exports = { addIn, addOut, list, updatePayment }
+const updateOutPayment = (req, res) => {
+    const { receiverParty, isApproved, amount, paidDate, paymentMode, description, category, _id } = req.body;
+    return payment.updateOne({ _id, senderParty: req.user.email }, { $set : { receiverParty, isApproved, amount, paidDate, paymentMode, description, category } }, { upsert : false }, (err, result) => {
+        console.log(err, result);
+        return res.send({ err, result})
+    })
+}
+
+module.exports = { addIn, addOut, list, updateInPayment, updateOutPayment }
