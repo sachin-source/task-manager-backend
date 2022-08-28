@@ -8,8 +8,9 @@ const login = (req, res) => {
             err && console.log("error at user login,\n req.query : " + JSON.stringify(req.query) + "\n error : " + JSON.stringify(err));
             return res.send({ auth: false, message: "Login failed, Please check your credentials." });
         } else {
+            const userData1 = userData.toJSON();
             jwt.sign(userData.toJSON(), config.jwtSecretKey, function (err, authToken) {
-                return res.send({ auth: !Boolean(err), authToken, message: err ? "Error with your user data, please try again later" : "Logged in successfully." });
+                return res.send({ auth: !Boolean(err), authToken, message: err ? "Error with your user data, please try again later" : "Logged in successfully.", userData : { role : userData1.role, name : userData1.name, email : userData1.email, provider : userData1.provider } });
             });
         }
     })
@@ -28,17 +29,12 @@ const setNotificationToken = (req, res) => {
     const email = req.user.email;
     const { notificationToken } = req.query
     User.findOne({ email }, (err, userData) => {
-        console.log(userData)
-
         // if (!userData.notificationToken || !userData.notificationToken.includes(notificationToken)) {
         const existingTokens = userData.notificationToken || [];
         return User.updateOne({ email }, { $addToSet: { notificationToken: notificationToken } }, (err, updated) => {
             console.log(err, updated)
             return res.send({ status: !Boolean(err) })
         })
-        // } else {
-        //     return res.send({status : true})
-        // }
     })
 }
 
