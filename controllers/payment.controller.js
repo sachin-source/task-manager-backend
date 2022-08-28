@@ -22,20 +22,19 @@ const list = (req, res) => {
     })
 }
 
-const updateInPayment = (req, res) => {
-    const { senderParty, isApproved, amount, paidDate, paymentMode, description, category, _id } = req.body;
-    return payment.updateOne({ _id, receiverParty: req.user.email }, { $set : { senderParty, isApproved, amount, paidDate, paymentMode, description, category } }, { upsert : false }, (err, result) => {
-        console.log(err, result);
-        return res.send({ err, result})
+const updatePayment = (req, res) => {
+    const { senderParty, isApproved, amount, paidDate, paymentMode, description, category, } = req.body;
+    const { paymentId } = req.params;
+    return payment.findById(paymentId, (err, data) => {
+        if (err) {
+            return res.send({ status : false, message : "cannot find the payment with this paymentId" })
+        }
+        const findParams = { _id : paymentId, [data.paymentType == 'in' ? "receiverParty" : "senderParty"] : req.user.email};
+        const updateParams = { isApproved, amount, paidDate, paymentMode, description, category, [data.paymentType != 'in' ? "receiverParty" : "senderParty"] : (data.paymentType != 'in' ? receiverParty : senderParty)}
+        return payment.updateOne(findParams, { $set : updateParams }, { upsert : false }, (err, result) => {
+            return res.send({ status : !(err) })
+        })
     })
 }
 
-const updateOutPayment = (req, res) => {
-    const { receiverParty, isApproved, amount, paidDate, paymentMode, description, category, _id } = req.body;
-    return payment.updateOne({ _id, senderParty: req.user.email }, { $set : { receiverParty, isApproved, amount, paidDate, paymentMode, description, category } }, { upsert : false }, (err, result) => {
-        console.log(err, result);
-        return res.send({ err, result})
-    })
-}
-
-module.exports = { addIn, addOut, list, updateInPayment, updateOutPayment }
+module.exports = { addIn, addOut, list, updatePayment }
