@@ -5,12 +5,16 @@ const cors = require('cors')
 const mongoose = require('mongoose');
 require('dotenv').config();
 const config = require('./config/index');
-
+const path = require('path')
 const routes = require('./routers/index.router')
+// var corsOptions = {
+//   origin: '*',
+//   optionsSuccessStatus: 200,
+// }
+// app.use(cors(corsOptions));
 app.use(cors())
-
 const port = process.env.PORT || 3000;
-
+// 
 // Bootstrap models
 // fs.readdirSync(models)
 //   .filter(file => ~file.search(/^[^.].*\.js$/))
@@ -37,12 +41,16 @@ function connect() {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(cors());
+app.use(express.static(path.join(__dirname, 'build')));
 
 
 app.use('/', routes);
+// app.get('*', (req, res) => {
+//   res.send("working")
+// })
 app.get('*', (req, res) => {
-  res.send("working")
-})
+res.sendFile(path.join(__dirname, 'build' ,'index.html'));
+    });
 
 
 
