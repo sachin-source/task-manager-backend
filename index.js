@@ -5,7 +5,7 @@ const cors = require('cors')
 const mongoose = require('mongoose');
 require('dotenv').config();
 const config = require('./config/index');
-const path = require('path')
+// const path = require('path')
 const routes = require('./routers/index.router')
 // var corsOptions = {
 //   origin: '*',
@@ -42,16 +42,16 @@ function connect() {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(cors());
-app.use(express.static(path.join(__dirname, 'build')));
+// app.use(express.static(path.join(__dirname, 'build')));
 
 
 app.use('/', routes);
 // app.get('*', (req, res) => {
 //   res.send("working")
 // })
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'build' ,'index.html'));
-    });
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'build' ,'index.html'));
+//     });
 
 
 
