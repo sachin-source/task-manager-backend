@@ -18,7 +18,7 @@ router.use('/auth/*', authenticate, (req, res) => {
 })
 
 
-// router.get('/*', (req, res) =>
-//     res.send('OK')
-// );
+router.get('/*', (req, res) =>
+    res.send('OK')
+);
 module.exports = router;

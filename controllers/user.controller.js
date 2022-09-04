@@ -3,14 +3,15 @@ const config = require('../config');
 const jwt = require('jsonwebtoken')
 
 const login = (req, res) => {
-    User.login(req.body, (err, same, userData) => {
+    User.login(req.body, (err, same, userInfo) => {
         if (err || !same) {
             err && console.log("error at user login,\n req.query : " + JSON.stringify(req.query) + "\n error : " + JSON.stringify(err));
             return res.send({ auth: false, message: "Login failed, Please check your credentials." });
         } else {
-            const userData1 = userData.toJSON();
-            jwt.sign(userData.toJSON(), config.jwtSecretKey, function (err, authToken) {
-                return res.send({ auth: !Boolean(err), authToken, message: err ? "Error with your user data, please try again later" : "Logged in successfully.", userData : { role : userData1.role, name : userData1.name, email : userData1.email, provider : userData1.provider } });
+            const userData1 = userInfo.toJSON();
+            const userData = { role : userData1.role, name : userData1.name, email : userData1.email, provider : userData1.provider }
+            jwt.sign(userData, config.jwtSecretKey, function (err, authToken) {
+                return res.send({ auth: !Boolean(err), authToken, message: err ? "Error with your user data, please try again later" : "Logged in successfully.", userData });
             });
         }
     })

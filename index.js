@@ -21,6 +21,7 @@ const port = process.env.PORT || 3000;
 //   .forEach(file => require(join(models, file)));
 
 
+
 function listen() {
   app.listen(port);
   console.log('Express app started on port ' + port);
@@ -49,7 +50,7 @@ app.use('/', routes);
 //   res.send("working")
 // })
 app.get('*', (req, res) => {
-res.sendFile(path.join(__dirname, 'build' ,'index.html'));
+  res.sendFile(path.join(__dirname, 'build' ,'index.html'));
     });
 
 
