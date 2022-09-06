@@ -28,7 +28,6 @@ projectSchema.statics = {
     const { name } = options;
     const project = new this({ name });
     return project.save((err, projectData) => {
-      // console.log(projectData,options, err);
       return callback(err, projectData)
     })
   },
