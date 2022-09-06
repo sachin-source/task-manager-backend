@@ -1,10 +1,6 @@
 
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
-
 const Schema = mongoose.Schema;
-const oAuthTypes = ['google'];
-
 /**
  * Task schema :
  * Taskid, name, description, assignee, assigner, priority, status, createdAt, updatedAt
