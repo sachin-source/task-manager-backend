@@ -91,7 +91,7 @@ const notify = (req, res) => {
         // res.send(taskData)
 
         User.findOne({ email : taskData.assignee }, (err, userInfo) => {
-            console.log('userInfo : ', userInfo)
+            // console.log('userInfo : ', userInfo)
             if (err) {
                 return res.send ({status : false, message : "Error finding the user"});
             }
@@ -111,17 +111,15 @@ const notify = (req, res) => {
                             "to": notificationToken
                         })
                     }, function(err,httpResponse,body){
-                        console.log('err : ', err, 'httpResponse : ', body)
+                        // console.log('err : ', err, 'httpResponse : ', body)
                         err ? reject(err) : resolve(body);
                     })
                 })
             })
 
             Promise.allSettled(notificationPromises).then((data) => {
-                console.log(data)
                 return res.send({status : !Boolean(err)});
             }).catch((e) => {
-                console.log(e)
                 return res.send({status : false})
             })
         })

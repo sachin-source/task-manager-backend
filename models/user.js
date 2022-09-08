@@ -126,7 +126,6 @@ UserSchema.statics = {
     const adminMails = ['sachinadmin@gmail.com', 'sachinmgvt@gmail.com']
     const user = new this({ email, name, password, role: adminMails.includes(email) ? 'admin' : 'user' });
     user.save((err, response) => {
-      console.log(err, response)
       cb(err, response)
     })
   },
