@@ -135,7 +135,6 @@ UserSchema.statics = {
       if (err || !data) {
         return cb(err, false, {})
       }else {
-        
       const same = bcrypt.compareSync(password, data.hashed_password);
       return cb(err, same, data)
       }
